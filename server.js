@@ -26,6 +26,13 @@ app.get("/projects", (request, response) => {
   response.render("projects", { title: "Projects", page: "projects" });
 });
 
+app.get("/categories", (request, response) => {
+  response.render("categories", {
+    title: "Categories",
+    page: "categories",
+  });
+});
+
 app.use((request, response) => {
   response.status(404).send("Page not found");
 });
