@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | Service Network</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell nav-wrap">
+        <a class="brand" href="/" aria-label="Service Network home">
+          <span class="brand-mark">SN</span>
+          <span>Service Network</span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <a class="<%= page === 'home' ? 'active' : '' %>" href="/">Home</a>
+          <a
+            class="<%= page === 'organizations' ? 'active' : '' %>"
+            href="/organizations"
+            >Organizations</a
+          >
+          <a class="<%= page === 'projects' ? 'active' : '' %>" href="/projects"
+            >Projects</a
+          >
+        </nav>
+      </div>
+    </header>
+    <main></main>
+  </body>
+</html>
