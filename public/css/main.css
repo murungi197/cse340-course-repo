@@ -11,14 +11,18 @@
   --line: #e2e8f0;
   --surface: #f1f5f9;
   --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(15, 23, 42, 0.08),
+    0 4px 6px -4px rgba(15, 23, 42, 0.06);
   --radius: 12px;
   --radius-sm: 6px;
   --transition: 0.2s ease;
   --max-width: 1160px;
   --gutter: clamp(1.5rem, 4vw, 3rem);
   --serif: Georgia, "Times New Roman", serif;
-  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 *,
@@ -115,7 +119,9 @@ nav a {
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: var(--radius-sm);
-  transition: color var(--transition), background var(--transition);
+  transition:
+    color var(--transition),
+    background var(--transition);
 }
 
 nav a:hover {
@@ -198,7 +204,10 @@ h2 {
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
-  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
   cursor: pointer;
   border: none;
 }
@@ -246,6 +255,13 @@ h2 {
   font-weight: normal;
   line-height: 1;
   letter-spacing: -0.02em;
+}
+
+.main-logo {
+  grid-column: 1 / -1;
+  width: min(100%, 560px);
+  height: auto;
+  margin: 0 auto;
 }
 
 .panel-label {
@@ -321,7 +337,9 @@ h2 {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: box-shadow var(--transition), transform var(--transition);
+  transition:
+    box-shadow var(--transition),
+    transform var(--transition);
 }
 
 .info-card:hover,
@@ -334,6 +352,16 @@ h2 {
   padding: 2rem;
   display: flex;
   flex-direction: column;
+}
+
+.info-card img {
+  display: block;
+  width: 100%;
+  max-width: 180px;
+  height: 100px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 1.2rem;
 }
 
 .info-card h2,
