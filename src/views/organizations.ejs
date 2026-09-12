@@ -7,35 +7,13 @@
   </p>
 </section>
 <section class="content-section shell card-grid">
-  <article class="info-card">
-    <img src="/images/brightfuture-logo.png" alt="BrightFuture Builders logo" />
-    <span class="card-kicker">Education</span>
-    <h2>Bright Future Learning</h2>
-    <p>
-      Mentoring and after-school programs that help young learners find their
-      next step.
-    </p>
-    <a href="/projects">View projects <span aria-hidden="true">-&gt;</span></a>
-  </article>
-  <article class="info-card">
-    <img src="/images/greenharvest-logo.png" alt="GreenHarvest Growers logo" />
-    <span class="card-kicker">Food access</span>
-    <h2>Green Harvest Collective</h2>
-    <p>
-      Neighbors growing, sharing, and delivering fresh food across our
-      community.
-    </p>
-    <a href="/projects">View projects <span aria-hidden="true">-&gt;</span></a>
-  </article>
-  <article class="info-card">
-    <img src="/images/unityserve-logo.png" alt="UnityServe Volunteers logo" />
-    <span class="card-kicker">Community</span>
-    <h2>UnityServe</h2>
-    <p>
-      Practical service opportunities that make shared spaces safer, warmer, and
-      more welcoming.
-    </p>
-    <a href="/projects">View projects <span aria-hidden="true">-&gt;</span></a>
-  </article>
+  <% organizations.forEach((organization) => { %>
+    <article class="info-card">
+      <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo" />
+      <h2><%= organization.name %></h2>
+      <p><%= organization.description %></p>
+      <a href="/projects">View projects <span aria-hidden="true">-&gt;</span></a>
+    </article>
+  <% }) %>
 </section>
 <%- include('partials/footer') %>
