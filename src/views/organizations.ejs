@@ -10,9 +10,9 @@
   <% organizations.forEach((organization) => { %>
     <article class="info-card">
       <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo" />
-      <h2><%= organization.name %></h2>
+      <h2><a href="/organization/<%= organization.organization_id %>"><%= organization.name %></a></h2>
       <p><%= organization.description %></p>
-      <a href="/projects">View projects <span aria-hidden="true">-&gt;</span></a>
+      <a href="/organization/<%= organization.organization_id %>">View organization <span aria-hidden="true">-&gt;</span></a>
     </article>
   <% }) %>
 </section>

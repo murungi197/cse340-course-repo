@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+<section class="page-heading shell">
+  <p class="eyebrow">Partner organization</p>
+  <h1><%= organization.name %></h1>
+  <p class="lede">Discover the work this organization is leading in the community.</p>
+</section>
+<section class="content-section shell organization-detail">
+  <article class="info-card organization-profile">
+    <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo" />
+    <div>
+      <h2>About <%= organization.name %></h2>
+      <p><%= organization.description %></p>
+      <% if (organization.contact_email) { %>
+        <p><a href="mailto:<%= organization.contact_email %>"><%= organization.contact_email %></a></p>
+      <% } %>
+    </div>
+  </article>
+  <div class="project-list">
+    <h2>Service projects</h2>
+    <% if (projects.length) { %>
+      <% projects.forEach((project) => { %>
+        <article class="project-row">
+          <div>
+            <h2>
+              <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+            </h2>
+            <p><%= project.description %></p>
+          </div>
+          <time datetime="<%= project.project_date %>">
+            <%= new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(project.project_date)) %>
+          </time>
+        </article>
+      <% }) %>
+    <% } else { %>
+      <p>No service projects are currently available.</p>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

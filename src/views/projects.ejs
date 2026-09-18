@@ -1,7 +1,7 @@
 <%- include('partials/header') %>
 <section class="page-heading shell">
   <p class="eyebrow">Your next good hour</p>
-  <h1>Projects</h1>
+  <h1>Upcoming Service Projects</h1>
   <p class="lede">
     Find a focused opportunity and bring your time, skills, and care to the
     work.
@@ -12,9 +12,14 @@
     <article class="project-row">
       <div>
         <h2>
-          <%= new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(project.project_date)) %>:
-          <%= project.title %> (<em><%= project.organization_name %></em>)
+          <a href="/project/<%= project.project_id %>">
+            <%= project.title %>
+          </a>
+          <span>
+            (<em><a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></em>)
+          </span>
         </h2>
+        <p><%= new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(project.date)) %></p>
         <p><%= project.description %></p>
       </div>
     </article>

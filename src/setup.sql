@@ -7,6 +7,7 @@ CREATE TABLE public.project (
     title VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
     project_date DATE NOT NULL,
+    location VARCHAR(255) NOT NULL DEFAULT 'Community location',
     organization_id INTEGER NOT NULL,
     CONSTRAINT project_organization_fk
         FOREIGN KEY (organization_id)

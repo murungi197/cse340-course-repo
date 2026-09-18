@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+<section class="page-heading shell">
+  <p class="eyebrow">Service project</p>
+  <h1><%= project.title %></h1>
+  <p class="lede"><%= project.description %></p>
+</section>
+<section class="content-section shell project-detail">
+  <article class="project-row">
+    <div>
+      <h2>Project details</h2>
+      <dl>
+        <dt>Date</dt>
+        <dd><%= new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(project.date)) %></dd>
+        <dt>Location</dt>
+        <dd><%= project.location %></dd>
+        <dt>Partner organization</dt>
+        <dd><a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></dd>
+      </dl>
+      <% if (categories.length) { %>
+        <div class="category-tags" aria-label="Project categories">
+          <% categories.forEach((category) => { %>
+            <a class="category-tag" href="/category/<%= category.category_id %>"><%= category.name %></a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </article>
+</section>
+<%- include('partials/footer') %>

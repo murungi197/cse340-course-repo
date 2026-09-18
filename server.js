@@ -1,11 +1,9 @@
-import { getAllProjects } from "./src/views/models/projects.js";
-import { getAllCategories } from "./src/views/models/categories.js";
-import { getAllOrganizations } from "./src/views/models/organizations.js";
 import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { testConnection } from "./src/views/models/db.js";
+import router from "./src/routes.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,45 +18,12 @@ app.use(express.static(path.join(__dirname, "public")));
 testConnection()
   .then(() => {
     console.log("Database connection established.");
-    return getAllProjects();
-  })
-  .then((projects) => {
-    console.log("Projects retrieved from database:", projects);
   })
   .catch((error) => {
     console.error("Failed to connect to the database.", error.message);
   });
 
-app.get("/", (request, response) => {
-  response.render("home", { title: "Home", page: "home" });
-});
-
-app.get("/organizations", async (request, response) => {
-  const organizations = await getAllOrganizations();
-  response.render("organizations", {
-    title: "Organizations",
-    page: "organizations",
-    organizations,
-  });
-});
-
-app.get("/projects", async (request, response) => {
-  const projects = await getAllProjects();
-  response.render("projects", {
-    title: "Projects",
-    page: "projects",
-    projects,
-  });
-});
-
-app.get("/categories", async (request, response) => {
-  const categories = await getAllCategories();
-  response.render("categories", {
-    title: "Categories",
-    page: "categories",
-    categories,
-  });
-});
+app.use(router);
 
 app.use((request, response) => {
   response.status(404).send("Page not found");

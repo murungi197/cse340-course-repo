@@ -423,6 +423,22 @@ h2 {
   font-weight: 500;
 }
 
+.category-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.category-tag {
+  padding: 0.35rem 0.7rem;
+  color: var(--teal);
+  background: rgba(13, 124, 102, 0.08);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .category-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
