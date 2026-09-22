@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Pool } from "pg";
-const { Pool } = pkg;
+
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
@@ -8,6 +8,7 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
+
 
 let db = null;
 
