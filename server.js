@@ -7,6 +7,17 @@ import flash from "./src/middleware/flash.js";
 import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
 
+const requiredEnvironmentVariables = ["DB_URL", "SESSION_SECRET"];
+const missingEnvironmentVariables = requiredEnvironmentVariables.filter(
+  (variableName) => !process.env[variableName],
+);
+
+if (missingEnvironmentVariables.length) {
+  throw new Error(
+    `Missing required environment variables: ${missingEnvironmentVariables.join(", ")}`,
+  );
+}
+
 const app = express();
 const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
