@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { testConnection } from "./src/views/models/db.js";
+import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
 
 const app = express();

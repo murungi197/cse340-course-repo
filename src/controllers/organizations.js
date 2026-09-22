@@ -1,8 +1,9 @@
 import {
   getAllOrganizations,
   getOrganizationById,
-} from "../views/models/organizations.js";
-import { getProjectsByOrganizationId } from "../views/models/projects.js";
+} from "../models/organizations.js";
+import { getProjectsByOrganizationId } from "../models/projects.js";
+import { getCategoriesByOrganizationId } from "../models/categories.js";
 
 const showOrganizationsPage = async (request, response) => {
   const organizations = await getAllOrganizations();
@@ -17,12 +18,14 @@ const showOrganizationPage = async (request, response) => {
   const organizationId = request.params.id;
   const organization = await getOrganizationById(organizationId);
   const projects = await getProjectsByOrganizationId(organizationId);
+  const categories = await getCategoriesByOrganizationId(organizationId);
 
   response.render("organization", {
     title: organization.name,
     page: "organizations",
     organization,
     projects,
+    categories,
   });
 };
 

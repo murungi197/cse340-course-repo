@@ -39,4 +39,26 @@ const getCategoriesByProjectId = async (projectId) => {
   return result.rows;
 };
 
-export { getAllCategories, getCategoryById, getCategoriesByProjectId };
+const getCategoriesByOrganizationId = async (organizationId) => {
+  const query = `
+        SELECT DISTINCT category.category_id, category.name
+        FROM public.category AS category
+        INNER JOIN public.project_category AS project_category
+            ON category.category_id = project_category.category_id
+        INNER JOIN public.project AS project
+            ON project_category.project_id = project.project_id
+        WHERE project.organization_id = $1
+        ORDER BY category.name;
+    `;
+
+  const result = await db.query(query, [organizationId]);
+
+  return result.rows;
+};
+
+export {
+  getAllCategories,
+  getCategoryById,
+  getCategoriesByProjectId,
+  getCategoriesByOrganizationId,
+};

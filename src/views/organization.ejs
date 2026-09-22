@@ -16,6 +16,18 @@
     </div>
   </article>
   <div class="project-list">
+    <h2>Service categories</h2>
+    <% if (categories.length) { %>
+      <ul>
+        <% categories.forEach((category) => { %>
+          <li><a href="/category/<%= category.category_id %>"><%= category.name %></a></li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No service categories are currently available.</p>
+    <% } %>
+  </div>
+  <div class="project-list">
     <h2>Service projects</h2>
     <% if (projects.length) { %>
       <% projects.forEach((project) => { %>
