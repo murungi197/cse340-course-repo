@@ -1,4 +1,5 @@
 import {
+  createOrganization,
   getAllOrganizations,
   getOrganizationById,
 } from "../models/organizations.js";
@@ -29,4 +30,29 @@ const showOrganizationPage = async (request, response) => {
   });
 };
 
-export { showOrganizationsPage, showOrganizationPage };
+const showNewOrganizationForm = async (request, response) => {
+  response.render("new-organization", {
+    title: "Add New Organization",
+    page: "organizations",
+  });
+};
+
+const processNewOrganizationForm = async (request, response) => {
+  const { name, description, contactEmail } = request.body;
+  const organizationId = await createOrganization(
+    name,
+    description,
+    contactEmail,
+    "placeholder-logo.png",
+  );
+
+  request.flash("success", `Organization ${name} was created successfully.`);
+  response.redirect(`/organization/${organizationId}`);
+};
+
+export {
+  showOrganizationsPage,
+  showOrganizationPage,
+  showNewOrganizationForm,
+  processNewOrganizationForm,
+};

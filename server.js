@@ -1,7 +1,9 @@
 import "dotenv/config";
 import express from "express";
+import session from "express-session";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import flash from "./src/middleware/flash.js";
 import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
 
@@ -12,6 +14,16 @@ const __dirname = path.dirname(__filename);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+app.use(flash);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Test the database connection

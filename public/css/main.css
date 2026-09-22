@@ -324,6 +324,36 @@ h2 {
   padding-bottom: 5rem;
 }
 
+.flash-messages {
+  padding-top: 1.5rem;
+}
+
+.flash {
+  margin: 0 0 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.flash-success {
+  color: #0a6b58;
+  background: #e6f5f0;
+  border-color: #8ad1bd;
+}
+
+.flash-error {
+  color: #9f2f24;
+  background: #fce9e6;
+  border-color: #e9a49b;
+}
+
+.flash-warning {
+  color: #805d00;
+  background: #fff7d6;
+  border-color: #e7cf72;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
