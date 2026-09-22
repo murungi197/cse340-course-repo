@@ -31,8 +31,9 @@ const getProjectsByOrganizationId = async (organizationId) => {
 
 const getUpcomingProjects = async (numberOfProjects) => {
   const query = `
-        SELECT project.project_id, project.title, project.description,
-               project.project_date::text AS date, project.location,
+         SELECT project.project_id, project.title, project.description,
+           project.project_date::text AS date,
+           'Community location' AS location,
                project.organization_id, organization.name AS organization_name
         FROM public.project AS project
         INNER JOIN public.organization AS organization
@@ -49,8 +50,9 @@ const getUpcomingProjects = async (numberOfProjects) => {
 
 const getProjectDetails = async (projectId) => {
   const query = `
-        SELECT project.project_id, project.title, project.description,
-               project.project_date::text AS date, project.location,
+         SELECT project.project_id, project.title, project.description,
+           project.project_date::text AS date,
+           'Community location' AS location,
                project.organization_id, organization.name AS organization_name
         FROM public.project AS project
         INNER JOIN public.organization AS organization
