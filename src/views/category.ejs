@@ -3,6 +3,7 @@
   <p class="eyebrow">Service category</p>
   <h1><%= category.name %></h1>
   <p class="lede">Explore service projects connected to this cause.</p>
+  <a class="button" href="/edit-category/<%= category.category_id %>">Edit Category</a>
 </section>
 <section class="content-section shell project-list">
   <% if (projects.length) { %>
