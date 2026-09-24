@@ -10,6 +10,7 @@
     <div>
       <h2>About <%= organization.name %></h2>
       <p><%= organization.description %></p>
+      <p><a href="/edit-organization/<%= organization.organization_id %>">Edit Organization</a></p>
       <% if (organization.contact_email) { %>
         <p><a href="mailto:<%= organization.contact_email %>"><%= organization.contact_email %></a></p>
       <% } %>
