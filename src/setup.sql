@@ -1,7 +1,51 @@
+-- 1. CLEANUP: Drop tables in reverse order of dependencies to avoid constraint errors
 DROP TABLE IF EXISTS public.project_category;
 DROP TABLE IF EXISTS public.category;
 DROP TABLE IF EXISTS public.project;
+DROP TABLE IF EXISTS public.organization; -- Added cleanup for the parent table
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.roles;
 
+-- 2. CREATE AND SEED ROLES
+CREATE TABLE public.roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+
+INSERT INTO public.roles (role_name, role_description) VALUES
+    ('user', 'Standard user with basic access'),
+    ('admin', 'Administrator with full system access');
+
+-- 3. CREATE USERS TABLE
+CREATE TABLE public.users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES public.roles (role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. CREATE PARENT TABLE: Organization must exist first
+CREATE TABLE public.organization (
+    organization_id SERIAL PRIMARY KEY,
+    name VARCHAR(150) NOT NULL
+);
+
+-- Mock Data: Prepopulate organizations 1 to 6 so your projects can link to them
+INSERT INTO public.organization (organization_id, name) VALUES
+    (1, 'Education Foundation A'),
+    (2, 'Community Garden Alliance'),
+    (3, 'Neighborhood Uplift Crew'),
+    (4, 'Education Foundation B'),
+    (5, 'Urban Agriculture Collective'),
+    (6, 'Public Spaces Initiative');
+
+-- Reset the serial sequence for organization so future inserts auto-increment correctly
+SELECT setval('public.organization_organization_id_seq', 6);
+
+-- 5. CREATE PROJECT TABLE
 CREATE TABLE public.project (
     project_id SERIAL PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
@@ -15,6 +59,7 @@ CREATE TABLE public.project (
         ON DELETE CASCADE
 );
 
+-- 6. INSERT PROJECTS
 INSERT INTO public.project (title, description, project_date, organization_id) VALUES
     ('Read with a student', 'Support elementary readers during a weekly literacy session.', '2026-09-14', 1),
     ('Build classroom shelves', 'Assemble and install storage for a community learning room.', '2026-09-22', 1),
@@ -47,11 +92,13 @@ INSERT INTO public.project (title, description, project_date, organization_id) V
     ('Host a neighborhood cleanup', 'Collect litter and sort recyclable materials from local streets.', '2026-10-13', 6),
     ('Organize a winter drive', 'Sort coats, blankets, and household goods for distribution.', '2026-10-22', 6);
 
+-- 7. CREATE CATEGORY TABLE
 CREATE TABLE public.category (
     category_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
+-- 8. CREATE JUNCTION TABLE
 CREATE TABLE public.project_category (
     project_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
@@ -66,12 +113,14 @@ CREATE TABLE public.project_category (
         ON DELETE CASCADE
 );
 
+-- 9. INSERT CATEGORIES
 INSERT INTO public.category (name) VALUES
     ('Education'),
     ('Food Access'),
     ('Community Improvement'),
     ('Neighborhood Support');
 
+-- 10. MAP CATEGORIES TO PROJECTS
 INSERT INTO public.project_category (project_id, category_id)
 SELECT project.project_id, category.category_id
 FROM public.project
@@ -86,6 +135,20 @@ INNER JOIN public.category
         ELSE 'Neighborhood Support'
     END;
 
+-- 11. VERIFY PROJECT DATA
 SELECT project_id, project_date, title, organization_id
 FROM public.project
 ORDER BY project_date, project_id;
+
+-- 12. VERIFY ROLES, USER-ROLE JOIN, AND FOREIGN KEY
+SELECT * FROM public.roles ORDER BY role_id;
+
+INSERT INTO public.users (name, email, password_hash, role_id)
+VALUES ('testuser', 'test@example.com', 'placeholder_hash', 1);
+
+SELECT users.user_id, users.name, users.email, roles.role_name, roles.role_description
+FROM public.users
+JOIN public.roles ON users.role_id = roles.role_id;
+
+DELETE FROM public.users WHERE email = 'test@example.com';
+
