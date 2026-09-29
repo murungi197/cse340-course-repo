@@ -30,7 +30,10 @@ CREATE TABLE public.users (
 -- 4. CREATE PARENT TABLE: Organization must exist first
 CREATE TABLE public.organization (
     organization_id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    contact_email VARCHAR(254),
+    logo_filename VARCHAR(255) NOT NULL DEFAULT 'placeholder-logo.png'
 );
 
 -- Mock Data: Prepopulate organizations 1 to 6 so your projects can link to them

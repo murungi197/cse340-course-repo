@@ -33,6 +33,11 @@ app.use(
   }),
 );
 app.use(flash);
+app.use((request, response, next) => {
+  response.locals.isLoggedIn = Boolean(request.session?.user);
+  response.locals.NODE_ENV = process.env.NODE_ENV || "development";
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));

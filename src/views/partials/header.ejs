@@ -28,6 +28,12 @@
             href="/categories"
             >Categories</a
           >
+          <% if (isLoggedIn) { %>
+            <a href="/logout">Logout</a>
+          <% } else { %>
+            <a class="<%= page === 'register' ? 'active' : '' %>" href="/register">Register</a>
+            <a class="<%= page === 'login' ? 'active' : '' %>" href="/login">Login</a>
+          <% } %>
         </nav>
       </div>
     </header>
