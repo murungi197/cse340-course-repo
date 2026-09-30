@@ -35,6 +35,8 @@ import {
   processLoginForm,
   processLogout,
   processUserRegistrationForm,
+  requireLogin,
+  showDashboard,
   showLoginForm,
   showUserRegistrationForm,
   userRegistrationValidation,
@@ -45,6 +47,7 @@ const router = express.Router();
 router.get("/", showHomePage);
 router.get("/login", showLoginForm);
 router.post("/login", processLoginForm);
+router.get("/dashboard", requireLogin, showDashboard);
 router.get("/logout", processLogout);
 router.get("/register", showUserRegistrationForm);
 router.post(

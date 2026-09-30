@@ -46,4 +46,7 @@
     </article>
   </div>
 </section>
+<% if (isLoggedIn) { %>
+  <p class="shell"><a href="/dashboard">My Dashboard</a></p>
+<% } %>
 <%- include('partials/footer') %>

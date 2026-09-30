@@ -55,6 +55,25 @@ const showLoginForm = (request, response) => {
   response.render("login", { title: "Login", page: "login" });
 };
 
+const requireLogin = (request, response, next) => {
+  if (!request.session?.user) {
+    request.flash("error", "You must be logged in to access that page.");
+    return response.redirect("/login");
+  }
+
+  next();
+};
+
+const showDashboard = (request, response) => {
+  const user = request.session.user;
+  response.render("dashboard", {
+    title: "Dashboard",
+    page: "dashboard",
+    name: user.name,
+    email: user.email,
+  });
+};
+
 const processLoginForm = async (request, response) => {
   const { email, password } = request.body;
 
@@ -84,7 +103,7 @@ const processLoginForm = async (request, response) => {
       console.log("User logged in:", user.user_id);
     }
 
-    response.redirect("/");
+    response.redirect("/dashboard");
   } catch (error) {
     console.error("Error during login:", error);
     request.flash("error", "An error occurred during login. Please try again.");
@@ -131,4 +150,6 @@ export {
   showLoginForm,
   processLoginForm,
   processLogout,
+  requireLogin,
+  showDashboard,
 };
