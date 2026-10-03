@@ -35,6 +35,7 @@ app.use(
 app.use(flash);
 app.use((request, response, next) => {
   response.locals.isLoggedIn = Boolean(request.session?.user);
+  response.locals.user = request.session?.user ?? null;
   response.locals.NODE_ENV = process.env.NODE_ENV || "development";
   next();
 });

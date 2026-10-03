@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<section class="page-heading shell">
+  <p class="eyebrow">Administration</p>
+  <h1>Registered Users</h1>
+  <p class="lede">View the names, email addresses, and roles of registered users.</p>
+</section>
+<section class="content-section shell">
+  <% if (users.length) { %>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach((registeredUser) => { %>
+            <tr>
+              <td><%= registeredUser.name %></td>
+              <td><%= registeredUser.email %></td>
+              <td><%= registeredUser.role_name %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <p>No registered users were found.</p>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

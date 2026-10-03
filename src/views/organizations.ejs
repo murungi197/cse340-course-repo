@@ -16,5 +16,7 @@
     </article>
   <% }) %>
 </section>
-<p class="shell"><a href="/new-organization">Add a new organization</a></p>
+<% if (user && user.role_name === 'admin') { %>
+  <p class="shell"><a href="/new-organization">Add a new organization</a></p>
+<% } %>
 <%- include('partials/footer') %>
