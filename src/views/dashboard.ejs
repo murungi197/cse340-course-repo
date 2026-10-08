@@ -7,5 +7,25 @@
   <% if (user && user.role_name === "admin") { %>
     <p><a href="/users">View registered users</a></p>
   <% } %>
+  <section aria-labelledby="volunteer-projects-heading">
+    <h2 id="volunteer-projects-heading">Projects you are volunteering for</h2>
+    <% if (volunteerProjects.length) { %>
+      <ul>
+        <% volunteerProjects.forEach((project) => { %>
+          <li>
+            <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+            - <%= new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(project.date)) %>
+            (<%= project.organization_name %>)
+            <form action="/project/<%= project.project_id %>/remove-volunteer" method="POST">
+              <input type="hidden" name="redirectTo" value="dashboard" />
+              <button type="submit">Remove me</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>You have not signed up to volunteer for any projects yet.</p>
+    <% } %>
+  </section>
 </main>
 <%- include('partials/footer') %>

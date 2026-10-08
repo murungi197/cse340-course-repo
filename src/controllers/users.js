@@ -5,6 +5,7 @@ import {
   createUser,
   getAllUsers,
 } from "../models/users.js";
+import { getVolunteerProjects } from "../models/projects.js";
 
 const userRegistrationValidation = [
   body("name")
@@ -82,13 +83,16 @@ const requireRole = (role, redirectTo = "/") => (request, response, next) => {
   next();
 };
 
-const showDashboard = (request, response) => {
+const showDashboard = async (request, response) => {
   const user = request.session.user;
+  const volunteerProjects = await getVolunteerProjects(user.user_id);
+
   response.render("dashboard", {
     title: "Dashboard",
     page: "dashboard",
     name: user.name,
     email: user.email,
+    volunteerProjects,
   });
 };
 

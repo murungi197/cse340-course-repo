@@ -1,5 +1,6 @@
 -- 1. CLEANUP: Drop tables in reverse order of dependencies to avoid constraint errors
 DROP TABLE IF EXISTS public.project_category;
+DROP TABLE IF EXISTS public.project_volunteer;
 DROP TABLE IF EXISTS public.category;
 DROP TABLE IF EXISTS public.project;
 DROP TABLE IF EXISTS public.organization; -- Added cleanup for the parent table
@@ -62,7 +63,22 @@ CREATE TABLE public.project (
         ON DELETE CASCADE
 );
 
--- 6. INSERT PROJECTS
+-- 6. CREATE PROJECT VOLUNTEER JUNCTION TABLE
+CREATE TABLE public.project_volunteer (
+    project_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, user_id),
+    CONSTRAINT project_volunteer_project_fk
+        FOREIGN KEY (project_id)
+        REFERENCES public.project (project_id)
+        ON DELETE CASCADE,
+    CONSTRAINT project_volunteer_user_fk
+        FOREIGN KEY (user_id)
+        REFERENCES public.users (user_id)
+        ON DELETE CASCADE
+);
+
+-- 7. INSERT PROJECTS
 INSERT INTO public.project (title, description, project_date, organization_id) VALUES
     ('Read with a student', 'Support elementary readers during a weekly literacy session.', '2026-09-14', 1),
     ('Build classroom shelves', 'Assemble and install storage for a community learning room.', '2026-09-22', 1),
@@ -95,13 +111,13 @@ INSERT INTO public.project (title, description, project_date, organization_id) V
     ('Host a neighborhood cleanup', 'Collect litter and sort recyclable materials from local streets.', '2026-10-13', 6),
     ('Organize a winter drive', 'Sort coats, blankets, and household goods for distribution.', '2026-10-22', 6);
 
--- 7. CREATE CATEGORY TABLE
+-- 8. CREATE CATEGORY TABLE
 CREATE TABLE public.category (
     category_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- 8. CREATE JUNCTION TABLE
+-- 9. CREATE PROJECT-CATEGORY JUNCTION TABLE
 CREATE TABLE public.project_category (
     project_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
@@ -116,14 +132,14 @@ CREATE TABLE public.project_category (
         ON DELETE CASCADE
 );
 
--- 9. INSERT CATEGORIES
+-- 10. INSERT CATEGORIES
 INSERT INTO public.category (name) VALUES
     ('Education'),
     ('Food Access'),
     ('Community Improvement'),
     ('Neighborhood Support');
 
--- 10. MAP CATEGORIES TO PROJECTS
+-- 11. MAP CATEGORIES TO PROJECTS
 INSERT INTO public.project_category (project_id, category_id)
 SELECT project.project_id, category.category_id
 FROM public.project
@@ -138,12 +154,12 @@ INNER JOIN public.category
         ELSE 'Neighborhood Support'
     END;
 
--- 11. VERIFY PROJECT DATA
+-- 12. VERIFY PROJECT DATA
 SELECT project_id, project_date, title, organization_id
 FROM public.project
 ORDER BY project_date, project_id;
 
--- 12. VERIFY ROLES, USER-ROLE JOIN, AND FOREIGN KEY
+-- 13. VERIFY ROLES, USER-ROLE JOIN, AND FOREIGN KEY
 SELECT * FROM public.roles ORDER BY role_id;
 
 INSERT INTO public.users (name, email, password_hash, role_id)
@@ -154,4 +170,3 @@ FROM public.users
 JOIN public.roles ON users.role_id = roles.role_id;
 
 DELETE FROM public.users WHERE email = 'test@example.com';
-

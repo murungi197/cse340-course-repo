@@ -13,6 +13,8 @@ import {
 import {
   processEditProjectForm,
   processNewProjectForm,
+  processProjectVolunteer,
+  processProjectVolunteerRemoval,
   projectValidation,
   showEditProjectForm,
   showNewProjectForm,
@@ -87,6 +89,16 @@ router.post(
   processNewProjectForm,
 );
 router.get("/project/:id", showProjectDetailsPage);
+router.post(
+  "/project/:projectId/volunteer",
+  requireLogin,
+  processProjectVolunteer,
+);
+router.post(
+  "/project/:projectId/remove-volunteer",
+  requireLogin,
+  processProjectVolunteerRemoval,
+);
 router.get("/edit-project/:id", requireRole("admin"), showEditProjectForm);
 router.post(
   "/edit-project/:id",

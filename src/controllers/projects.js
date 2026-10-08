@@ -1,7 +1,10 @@
 import {
+  addProjectVolunteer,
   createProject,
   getProjectDetails,
   getUpcomingProjects,
+  isUserVolunteering,
+  removeProjectVolunteer,
   updateProject,
 } from "../models/projects.js";
 import { getCategoriesByProjectId } from "../models/categories.js";
@@ -59,13 +62,51 @@ const showProjectDetailsPage = async (request, response) => {
   const projectId = request.params.id;
   const project = await getProjectDetails(projectId);
   const categories = await getCategoriesByProjectId(projectId);
+  const isVolunteer = request.session?.user
+    ? await isUserVolunteering(projectId, request.session.user.user_id)
+    : false;
 
   response.render("project", {
     title: project.title,
     page: "projects",
     project,
     categories,
+    isVolunteer,
   });
+};
+
+const processProjectVolunteer = async (request, response) => {
+  const projectId = request.params.projectId;
+  const userId = request.session.user.user_id;
+
+  try {
+    await addProjectVolunteer(projectId, userId);
+    request.flash("success", "You are now volunteering for this project.");
+  } catch (error) {
+    console.error("Error signing up to volunteer for project:", error);
+    request.flash("error", "There was an error signing up to volunteer.");
+  }
+
+  response.redirect(`/project/${projectId}`);
+};
+
+const processProjectVolunteerRemoval = async (request, response) => {
+  const projectId = request.params.projectId;
+  const userId = request.session.user.user_id;
+
+  try {
+    await removeProjectVolunteer(projectId, userId);
+    request.flash("success", "You are no longer volunteering for this project.");
+  } catch (error) {
+    console.error("Error removing project volunteer:", error);
+    request.flash("error", "There was an error removing your volunteer signup.");
+  }
+
+  const redirectTo =
+    request.body.redirectTo === "dashboard"
+      ? "/dashboard"
+      : `/project/${projectId}`;
+  response.redirect(redirectTo);
 };
 
 const showNewProjectForm = async (request, response) => {
@@ -139,6 +180,8 @@ const processEditProjectForm = async (request, response) => {
 export {
   showProjectsPage,
   showProjectDetailsPage,
+  processProjectVolunteer,
+  processProjectVolunteerRemoval,
   showNewProjectForm,
   processNewProjectForm,
   showEditProjectForm,

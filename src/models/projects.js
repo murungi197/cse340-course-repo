@@ -65,6 +65,56 @@ const getProjectDetails = async (projectId) => {
   return result.rows[0];
 };
 
+const getVolunteerProjects = async (userId) => {
+  const query = `
+        SELECT project.project_id, project.title,
+               project.project_date::text AS date,
+               project.description, organization.name AS organization_name
+        FROM public.project_volunteer AS project_volunteer
+        INNER JOIN public.project AS project
+            ON project.project_id = project_volunteer.project_id
+        INNER JOIN public.organization AS organization
+            ON organization.organization_id = project.organization_id
+        WHERE project_volunteer.user_id = $1
+        ORDER BY project.project_date, project.project_id;
+    `;
+
+  const result = await db.query(query, [userId]);
+
+  return result.rows;
+};
+
+const isUserVolunteering = async (projectId, userId) => {
+  const query = `
+        SELECT 1
+        FROM public.project_volunteer
+        WHERE project_id = $1 AND user_id = $2;
+    `;
+
+  const result = await db.query(query, [projectId, userId]);
+
+  return result.rows.length > 0;
+};
+
+const addProjectVolunteer = async (projectId, userId) => {
+  const query = `
+        INSERT INTO public.project_volunteer (project_id, user_id)
+        VALUES ($1, $2)
+        ON CONFLICT (project_id, user_id) DO NOTHING;
+    `;
+
+  await db.query(query, [projectId, userId]);
+};
+
+const removeProjectVolunteer = async (projectId, userId) => {
+  const query = `
+        DELETE FROM public.project_volunteer
+        WHERE project_id = $1 AND user_id = $2;
+    `;
+
+  await db.query(query, [projectId, userId]);
+};
+
 const getProjectsByCategoryId = async (categoryId) => {
   const query = `
         SELECT project.project_id, project.title
@@ -150,6 +200,10 @@ export {
   getProjectsByOrganizationId,
   getUpcomingProjects,
   getProjectDetails,
+  getVolunteerProjects,
+  isUserVolunteering,
+  addProjectVolunteer,
+  removeProjectVolunteer,
   getProjectsByCategoryId,
   createProject,
   updateProject,
