@@ -1,12 +1,13 @@
 import "dotenv/config";
 import express from "express";
 import session from "express-session";
-import pgSession from "connect-pg-simple"; // 1. Import the session store
+import pgSession from "connect-pg-simple";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import flash from "./src/middleware/flash.js";
 import { testConnection } from "./src/models/db.js";
 import router from "./src/routes.js";
+import pg from "pg"; // Required to run the automatic setup query
 
 const requiredEnvironmentVariables = ["DB_URL", "SESSION_SECRET"];
 const missingEnvironmentVariables = requiredEnvironmentVariables.filter(
@@ -24,7 +25,6 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 2. Initialize the Postgres store constructor
 const PostgresStore = pgSession(session);
 
 app.set("view engine", "ejs");
@@ -32,17 +32,16 @@ app.set("views", path.join(__dirname, "src", "views"));
 
 app.use(
   session({
-    // 3. Configure the session middleware to use Postgres
     store: new PostgresStore({
-      conString: process.env.DB_URL, // Reuses your existing DB connection URL
-      tableName: "session",          // Matches the SQL table created in Step 2
+      conString: process.env.DB_URL,
+      tableName: "session",
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days session expiration
-      secure: process.env.NODE_ENV === "production", // Ensures cookies are HTTPS only on Render
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
+      secure: process.env.NODE_ENV === "production", 
     },
   }),
 );
@@ -58,14 +57,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Test the database connection
-testConnection()
-  .then(() => {
-    console.log("Database connection established.");
-  })
-  .catch((error) => {
-    console.error("Failed to connect to the database.", error.message);
-  });
+// --- AUTOMATIC SESSION TABLE SETUP ---
+async function initializeSessionTable() {
+  const pool = new pg.Pool({ connectionString: process.env.DB_URL });
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "session" (
+        "sid" varchar NOT NULL COLLATE "default",
+        "sess" json NOT NULL,
+        "expire" timestamp(6) NOT NULL,
+        CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
+      ) WITH (OIDS=FALSE);
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
+    `);
+    console.log("Session table verified/created successfully.");
+  } catch (error) {
+    console.error("Failed to automatically create session table:", error.message);
+  } finally {
+    await pool.end();
+  }
+}
+// -------------------------------------
 
 app.use(router);
 
@@ -76,9 +90,14 @@ app.use((request, response) => {
 app.listen(port, async () => {
   try {
     await testConnection();
+    console.log("Database connection established.");
+    
+    // Automatically provision the session table right after connecting
+    await initializeSessionTable(); 
+    
     console.log(`Server is running at http://127.0.0.1:${port}`);
     console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
   } catch (error) {
-    console.error("Error connecting to the database:", error);
+    console.error("Error during server startup:", error);
   }
 });
